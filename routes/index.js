@@ -113,4 +113,41 @@ router.get('/log', (req, res) => {
   return res.json(JSON.parse(data))
 })
 
+
+
+// 保存任务
+router.post('/task/save', (req, res) => {
+  let data = getDB()
+
+  data = JSON.parse(data)
+
+  data.saveTask.push({ ...req.body, id: Date.now() })
+
+  fs.writeFileSync(dbPath, JSON.stringify(data))
+  return res.json({ code: 1, msg: '保存任务成功' })
+})
+
+// 删除保存任务
+router.get('/task/save/delete', (req, res) => {
+  const id = req.query.id
+  
+  let data = getDB()
+  data = JSON.parse(data)
+  data.saveTask = data.saveTask.filter(item => item.id !== parseInt(id, 10))
+  fs.writeFileSync(dbPath, JSON.stringify(data))
+  return res.json({ code: 1, msg: '删除成功！' })
+})
+
+
+// 保存设置
+router.post('/save/setting', (req, res) => {
+  let data = getDB()
+
+  data = JSON.parse(data)
+
+  data = {...data, ...req.body }
+
+  fs.writeFileSync(dbPath, JSON.stringify(data))
+  return res.json({ code: 1, msg: '保存设置成功' })
+})
 module.exports = router;
